@@ -33,7 +33,7 @@ RUN tar -xvzf julia-1.4.2-linux-aarch64.tar.gz
 ENV PATH="$PATH:/julia-1.4.2/bin"
 
 
-RUN echo "using Pkg; Pkg.add(\"CUDA\");using CUDA;Pkg.add(\"LanguageServer\");using LanguageServer;Pkg.add(\"Revise\");using Revise;" >> setup.jl
+RUN echo "using Pkg; Pkg.add(\"CUDA\");using CUDA;Pkg.add(\"LanguageServer\");using LanguageServer;Pkg.add(\"Revise\");using Revise;Pkg.add(\"Distributions\");using Distributions;" >> setup.jl
 RUN julia setup.jl
 
 #USER coder
