@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-# Base image, usually cuda-jetpack:4.2.1-runtime
+# Base image, usually cuda-jetpack:4.4-runtime
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
@@ -15,4 +15,18 @@ RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
     cuda-minimal-build-$CUDA_VERSION \
     cuda-command-line-tools-$CUDA_VERSION \
     cuda-samples-$CUDA_VERSION \
+    curl \
+    dumb-init \
+    htop \
+    locales \
+    man \
+    wget \
+    nano \
+    git \
+    procps \
+    ssh \
+    sudo \
+    vim \
+    python3-pip \
+    lsb-release \
     && rm -rf /var/lib/apt/lists/*
