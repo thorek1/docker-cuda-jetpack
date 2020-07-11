@@ -33,7 +33,8 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #ENV PATH="$PATH:/julia-1.4.2/bin"
 
 
-RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
+#RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
+RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);Pkg.test([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
 RUN julia setup.jl
 
 #USER coder
