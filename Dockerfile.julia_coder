@@ -33,6 +33,7 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #ENV PATH="$PATH:/julia-1.4.2/bin"
 
 # install GR plots.jl underlying framework
+COPY grinstall.sh /
 RUN grinstall.sh
 
 #RUN git clone https://github.com/jheinen/gr && cd gr
