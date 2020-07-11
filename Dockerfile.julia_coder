@@ -36,19 +36,20 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #COPY grinstall.sh .
 #RUN grinstall.sh
 
-RUN cat <<EOF > grinstall.sh \
-  #!/bin/bash \
-  git clone https://github.com/jheinen/gr \
-  cd gr \
-  make \
-  make install \
-  make clean \
-  EOF
+#RUN cat <<EOF > grinstall.sh \
+#  #!/bin/bash \
+#  git clone https://github.com/jheinen/gr \
+#  cd gr \
+#  make \
+#  make install \
+#  make clean \
+#  EOF
 
-#RUN git clone https://github.com/jheinen/gr && cd gr
-#RUN make
-#RUN make install
-#RUN make clean
+RUN git clone https://github.com/jheinen/gr
+RUN cd gr
+RUN make
+RUN make install
+RUN make clean
 ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
 
 USER root
