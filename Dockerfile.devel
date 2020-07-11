@@ -7,9 +7,9 @@ FROM ${BASE_IMAGE}
 LABEL maintainer "Ralf Sippl <ralf.sippl@gmail.com>"
 
 # Mount local CUDA apt repo only during build, to reduce image size
-# RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
-#    apt-get update && \
-RUN apt-get update && \
+RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
+    apt-get update && \
+#RUN apt-get update && \
     apt-get install -y \
     cuda-libraries-dev-$CUDA_VERSION \
     cuda-nvml-dev-$CUDA_VERSION \
