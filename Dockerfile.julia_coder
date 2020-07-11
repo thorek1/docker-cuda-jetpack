@@ -33,14 +33,23 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #ENV PATH="$PATH:/julia-1.4.2/bin"
 
 # install GR plots.jl underlying framework
-COPY grinstall.sh .
-RUN grinstall.sh
+#COPY grinstall.sh .
+#RUN grinstall.sh
+
+RUN cat <<EOF > grinstall.sh \
+  #!/bin/bash \
+  git clone https://github.com/jheinen/gr \
+  cd gr \
+  make \
+  make install \
+  make clean \
+  EOF
 
 #RUN git clone https://github.com/jheinen/gr && cd gr
 #RUN make
 #RUN make install
 #RUN make clean
-#ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
+ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
 
 USER root
 #RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
