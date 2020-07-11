@@ -9,13 +9,13 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 COPY apt-trusted-keys /tmp/
 
 RUN apt-get update && apt-get install -y gnupg2 ca-certificates && apt-key add /tmp/apt-trusted-keys && \
-    echo "deb file:///var/cuda-repo /" > /etc/apt/sources.list.d/cuda.list && \
+#    echo "deb file:///var/cuda-repo /" > /etc/apt/sources.list.d/cuda.list && \
 #    echo "deb http://international.download.nvidia.com/jetson/repos/common r32 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
 #    echo "deb http://international.download.nvidia.com/jetson/repos/t210 r32 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
 #    echo "deb http://international.download.nvidia.com/jetson/repos/common r32.4 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
 #    echo "deb http://international.download.nvidia.com/jetson/repos/t210 r32.4 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
-    echo "deb http://repo.download.nvidia.com/jetson/t210 r32.4 InRelease" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
-    echo "deb http://repo.download.nvidia.com/jetson/common r32.4 InRelease" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+    echo "deb http://repo.download.nvidia.com/jetson/t210 r32.4 InRelease" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
+    echo "deb http://repo.download.nvidia.com/jetson/common r32.4 InRelease" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
 
 # Mount local CUDA apt repo only during build, to reduce image size
 RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
