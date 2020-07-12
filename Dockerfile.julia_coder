@@ -52,8 +52,9 @@ RUN apt-get install -y \
     lsb-release
     
 RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
-
-RUN wget -O - https://www.ports.debian.org/archive_2016.key | apt-key add -
+RUN gpg --keyserver hkp://subkeys.pgp.net --recv-keys 84C573CD4E1AFD6C && \
+    gpg --export 84C573CD4E1AFD6C | apt-key add -
+RUN wget -O - https://www.ports.debian.org/archive_2020.key | apt-key add -
 # Mount local CUDA apt repo only during build, to reduce image size
 RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
     apt-get update && \
