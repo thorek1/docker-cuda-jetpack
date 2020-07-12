@@ -10,7 +10,7 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
 COPY apt-trusted-keys /tmp/
 
-RUN apt-get update && apt-get install -y gnupg2 ca-certificates && apt-key add /tmp/apt-trusted-keys && \
+RUN apt-get update && apt-get install -y gnupg2 ca-certificates wget && apt-key add /tmp/apt-trusted-keys && \
     echo "deb file:///var/cuda-repo /" > /etc/apt/sources.list.d/cuda.list && \
     echo "deb http://repo.download.nvidia.com/jetson/t210 r32.4 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
     echo "deb http://repo.download.nvidia.com/jetson/common r32.4 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
@@ -35,15 +35,13 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=10.2"
 
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get install -y \
     curl \
     julia \
     dumb-init \
     htop \
     locales \
     man \
-    wget \
     nano \
     git \
     procps \
@@ -57,7 +55,8 @@ RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/so
 
 RUN wget -O - https://www.ports.debian.org/archive_2016.key | apt-key add -
 # Mount local CUDA apt repo only during build, to reduce image size
-RUN apt-get update && \
+RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
+    apt-get update && \
     apt-get install -y \
     libx11-dev libxft-dev libxt-dev python2.7 \
     libgl1-mesa-dev libgs-dev texlive-latex3 dvipng qt4-dev-tools \
