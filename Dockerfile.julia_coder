@@ -35,8 +35,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=10.2"
 
 RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
-RUN wget -O - https://www.ports.debian.org/archive_2016.key | apt-key add -
-# Mount local CUDA apt repo only during build, to reduce image size
+
 RUN apt-get update && \
     apt-get install -y \
     curl \
@@ -53,7 +52,12 @@ RUN apt-get update && \
     sudo \
     vim \
     python3-pip \
-    lsb-release \
+    lsb-release
+    
+RUN wget -O - https://www.ports.debian.org/archive_2016.key | apt-key add -
+# Mount local CUDA apt repo only during build, to reduce image size
+RUN apt-get update && \
+    apt-get install -y \
     libx11-dev libxft-dev libxt-dev python2.7 \
     libgl1-mesa-dev libgs-dev texlive-latex3 dvipng qt4-dev-tools \
     libgtk2.0-dev libwxgtk3.0-dev libglfw3-dev libzmq3-dev cmake \
