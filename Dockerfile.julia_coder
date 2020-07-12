@@ -34,6 +34,8 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=10.2"
 
+RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
+
 # Mount local CUDA apt repo only during build, to reduce image size
 #RUN apt-get update && \
 RUN apt-get install -y \
