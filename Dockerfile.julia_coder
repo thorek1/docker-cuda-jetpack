@@ -52,6 +52,22 @@ RUN apt-get install -y \
     vim \
     python3-pip \
     lsb-release \
+    libxt-dev \
+    libxft-dev \
+    python2.7-dev \
+    python-numpy \
+    texlive-latex3 \
+    dvipng \
+    python-opengl \
+    libgl1-mesa-dev \
+    qt4-dev-tools \
+    pyqt4-dev-tools \
+    libgs-dev \
+    libgtk2.0-dev \
+    libwxgtk2.8-dev \
+    python-wxgtk2.8 \
+    libglfw3-dev \
+    libzmq3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 
