@@ -1,13 +1,60 @@
 # syntax=docker/dockerfile:experimental
 
-# Base image, usually cuda-jetpack:4.4-devel
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
 
-LABEL maintainer "Thore Kockerols"
-
+FROM debian:sid-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
+
+ENV CUDA_VERSION 10.2
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
+
+COPY apt-trusted-keys /tmp/
+
+RUN apt-get update && apt-get install -y gnupg2 ca-certificates && apt-key add /tmp/apt-trusted-keys && \
+    echo "deb file:///var/cuda-repo /" > /etc/apt/sources.list.d/cuda.list && \
+    echo "deb http://repo.download.nvidia.com/jetson/t210 r32.4 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
+    echo "deb http://repo.download.nvidia.com/jetson/common r32.4 main" >> /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+
+# Mount local CUDA apt repo only during build, to reduce image size
+RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
+    apt-get update && \
+    apt-get install -y \
+    cuda-cudart-$CUDA_VERSION \
+    cuda-libraries-dev-$CUDA_VERSION \
+    cuda-nvml-dev-$CUDA_VERSION \
+    cuda-minimal-build-$CUDA_VERSION \
+    cuda-command-line-tools-$CUDA_VERSION \
+    cuda-samples-$CUDA_VERSION
+
+RUN ln -s /usr/local/cuda-$CUDA_VERSION /usr/local/cuda
+
+ENV LD_LIBRARY_PATH /usr/lib/aarch64-linux-gnu/tegra
+
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+ENV NVIDIA_REQUIRE_CUDA "cuda>=10.2"
+
+# Mount local CUDA apt repo only during build, to reduce image size
+#RUN apt-get update && \
+RUN apt-get install -y \
+    curl \
+    julia \
+    dumb-init \
+    htop \
+    locales \
+    man \
+    wget \
+    nano \
+    git \
+    procps \
+    ssh \
+    sudo \
+    vim \
+    python3-pip \
+    lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 
@@ -27,11 +74,11 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 
 
 #RUN wget https://julialang-s3.julialang.org/bin/linux/aarch64/1.4/julia-1.4.2-linux-aarch64.tar.gz
-
 #RUN tar -xvzf julia-1.4.2-linux-aarch64.tar.gz
-
 #ENV PATH="$PATH:/julia-1.4.2/bin"
 
+RUN ls
+RUN cd
 # install GR plots.jl underlying framework
 #COPY grinstall.sh .
 #RUN grinstall.sh
@@ -46,7 +93,7 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #  EOF
 
 RUN git clone https://github.com/jheinen/gr
-RUN cd gr
+WORKDIR  gr
 RUN make
 RUN make install
 RUN make clean
@@ -54,7 +101,7 @@ ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
 
 USER root
 #RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
-RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);Pkg.test([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
+RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);Pkg.test([\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
 RUN julia setup.jl
 
 #USER coder
