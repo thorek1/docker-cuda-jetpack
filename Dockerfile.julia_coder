@@ -49,23 +49,36 @@ RUN apt-get install -y \
     sudo \
     vim \
     python3-pip \
-    lsb-release \
-    debian-ports-archive-keyring
+    lsb-release
+#    debian-ports-archive-keyring
 
 
     
-RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
+#RUN echo "deb http://ftp.ports.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
+#RUN echo "deb http://ftp.debian.org/debian/ sid main" >> /etc/apt/sources.list
+#RUN echo "deb http://ftp.de.debian.org/debian-ports/ sid main" >> /etc/apt/sources.list
 #RUN gpg --keyserver hkp://subkeys.pgp.net --recv-keys 84C573CD4E1AFD6C && \
 #    gpg --export 84C573CD4E1AFD6C | apt-key add -
-RUN wget -O - https://www.ports.debian.org/archive_2020.key | apt-key add -
+#RUN wget -O - https://www.ports.debian.org/archive_2020.key | apt-key add -
 # Mount local CUDA apt repo only during build, to reduce image size
-RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
-    apt-get update && \
-    apt-get install -y \
-    libx11-dev libxft-dev libxt-dev python2.7 \
-    libgl1-mesa-dev libgs-dev texlive-latex3 dvipng qt4-dev-tools \
-    libgtk2.0-dev libwxgtk3.0-dev libglfw3-dev libzmq3-dev cmake \
-    && rm -rf /var/lib/apt/lists/*
+#RUN cat /etc/apt/sources.list
+#--mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
+#    apt-get update && \
+#    apt search libwgtk3.0
+#RUN wget http://ftp.ports.debian.org/debian-ports//pool-arm64/main/w/wxwidgets3.0/libwxgtk3.0-dev_3.0.2-1_arm64.deb
+#RUN apt install libwxgtk3.0-dev_3.0.2-1_arm64.deb
+
+#RUN wget http://ftp.ports.debian.org/debian-ports//pool-arm64/main/q/qt4-x11/qt4-dev-tools_4.8.6+git64-g5dc8b2b+dfsg-2_arm64.deb
+#RUN apt install qt4-dev-tools_4.8.6+git64-g5dc8b2b+dfsg-2_arm64.deb
+
+#RUN --mount=type=bind,readonly,source=/var/cuda-repo,target=/var/cuda-repo \
+#    apt-get update && \
+#    apt-get install -y \
+#    libx11-dev libxft-dev libxt-dev python2.7 python-numpy python-opengl pyqt4-dev-tools python-wxgtk3.0 libwxgtk3.0-dev qt4-dev-tools \
+#    libgl1-mesa-dev libgs-dev texlive-latex-recommended dvipng \
+#    libgtk2.0-dev libglfw3-dev libzmq3-dev cmake \
+#    && rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/lib/apt/lists/*
 
 #RUN pip install PyOpenGL
 
@@ -91,8 +104,8 @@ RUN ARCH="$(dpkg --print-architecture)" && \
 #RUN tar -xvzf julia-1.4.2-linux-aarch64.tar.gz
 #ENV PATH="$PATH:/julia-1.4.2/bin"
 
-RUN ls
-RUN cd
+#RUN ls
+#RUN cd
 # install GR plots.jl underlying framework
 #COPY grinstall.sh .
 #RUN grinstall.sh
@@ -106,16 +119,16 @@ RUN cd
 #  make clean \
 #  EOF
 
-RUN git clone https://github.com/jheinen/gr
-WORKDIR  gr
-RUN make
-RUN make install
-RUN make clean
-ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
+#RUN git clone https://github.com/jheinen/gr
+#WORKDIR  gr
+#RUN make
+#RUN make install
+#RUN make clean
+#ENV PYTHONPATH=${PYTHONPATH}:/usr/local/gr/lib/python
 
 USER root
 #RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
-RUN echo "using Pkg; Pkg.add([\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);Pkg.test([\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions;" >> setup.jl
+RUN echo "using Pkg; Pkg.add([\"NonlinearEigenproblems\",\"CUDA\",\"LanguageServer\",\"Revise\",\"Distributions\"]);using CUDA, LanguageServer, Revise, Distributions, NonlinearEigenproblems;" >> setup.jl
 RUN julia setup.jl
 
 #USER coder
