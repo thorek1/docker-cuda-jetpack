@@ -33,9 +33,10 @@ apt-key exportall > apt-trusted-keys
 #    -f Dockerfile.devel .
 
 echo 'Building cuda-jetpack:4.4-julia_coder container...'
-sudo DOCKER_BUILDKIT=1 docker build \
-    -t cuda-jetpack:4.4-julia_coder \
-    --build-arg BASE_IMAGE=cuda-jetpack:4.4-devel \
-    -f Dockerfile.julia_coder .
+sudo DOCKER_BUILDKIT=1 docker build -t julia-cuda -f Dockerfile.julia_coder .
+#sudo DOCKER_BUILDKIT=1 docker build \
+#    -t cuda-jetpack:4.4-julia_coder \
+#    --build-arg BASE_IMAGE=cuda-jetpack:4.4-devel \
+#    -f Dockerfile.julia_coder .
 
 #sudo docker tag cuda-jetpack:4.4-runtime cuda-jetpack:latest
