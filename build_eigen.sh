@@ -18,6 +18,7 @@ apt-key exportall > apt-trusted-keys
 echo 'Building cuda-jetpack:4.4-base container...'
 sudo DOCKER_BUILDKIT=1 docker build \
     -t cuda-jetpack:4.4-base \
+    --build-arg BASE_IMAGE=debian:stable-slim \
     -f Dockerfile.base .
 
 echo 'Building cuda-jetpack:4.4-runtime container...'
