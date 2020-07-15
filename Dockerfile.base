@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:experimental
 #FROM ubuntu:18.04
-FROM debian:sid-slim
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+#FROM debian:stable-slim
 LABEL maintainer "Ralf Sippl <ralf.sippl@gmail.com>"
 
 ENV CUDA_VERSION 10.2
