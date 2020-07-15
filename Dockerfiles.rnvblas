@@ -1,0 +1,14 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+RUN rm /etc/apt/sources.list.d/cuda.list
+
+RUN apt-get update && apt-get install -y r-base-dev libopenblas-dev
+
+RUN echo "NVBLAS_LOGFILE nvblas.log \
+NVBLAS_CPU_BLAS_LIB /usr/lib/aarch64-linux-gnu/openblas-pthread/libblas.so.3 \
+NVBLAS_GPU_LIST ALL" > /etc/nvblas.conf
+#COPY ./docker-entrypoint.sh /
+#ENTRYPOINT ["NVBLAS_CONFIG_FILE=/etc/nvblas.conf LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libnvblas.so R"]
+#CMD["NVBLAS_CONFIG_FILE=/etc/nvblas.conf LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libnvblas.so R"]
+#NVBLAS_CONFIG_FILE=/etc/nvblas.conf LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libnvblas.so R
