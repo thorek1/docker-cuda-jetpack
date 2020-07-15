@@ -1,0 +1,37 @@
+# syntax=docker/dockerfile:experimental
+
+# Base image, usually cuda-jetpack:4.4-runtime
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+WORKDIR /usr/local/include/
+RUN git clone https://gitlab.com/libeigen/eigen.git
+ENV PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+
+RUN nvcc eigen/test/gpu_basic.cu -I /usr/local/include/eigen -o gpu_basic
+RUN chmod 754 gpu_basic
+#RUN ./gpu_basic
+
+RUN g++ eigen/test/real_qz.cpp -I /usr/local/include/eigen -DEIGEN_TEST_MAX_SIZE=320 -o real_qz
+RUN chmod 754 real_qz
+RUN ./real_qz
+
+COPY real_qz_calc.cpp eigen/test/
+RUN g++ eigen/test/real_qz_calc.cpp -I /usr/local/include/eigen -o real_qz_calc
+
+RUN chmod 754 real_qz_calc
+RUN ./real_qz_calc
+
+COPY gpu.cu eigen/test/
+RUN nvcc eigen/test/gpu.cu -I /usr/local/include/eigen -o gpu -w
+RUN chmod 754 gpu
+RUN ./gpu
+
+RUN nvcc eigen/test/gpu_basic.cu -I /usr/local/include/eigen -o gpu_basic -w
+RUN chmod 754 gpu_basic
+RUN ./gpu_basic
+
+
+COPY real_qz_calc.cu eigen/test/
+RUN nvcc eigen/test/real_qz_calc.cu -I /usr/local/include/eigen -o real_qz_calc_cu -w
+RUN chmod 754 real_qz_calc_cu
+RUN ./real_qz_calc_cu
